@@ -15,12 +15,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import SearchInput from '@/components/SearchInput';
+import { getCountries } from '@/actions/CountriesActions';
 
 export default function Home() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['countries'],
-    queryFn: () =>
-      fetch('https://restcountries.com/v3.1/all').then((res) => res.json()),
+    queryFn: () => getCountries(),
   });
 
   return (

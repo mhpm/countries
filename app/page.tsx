@@ -1,10 +1,13 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import TableCountries from '@/components/TableCountries';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import SearchInput from '@/components/SearchInput';
+import { getCountries } from '@/actions/CountriesActions';
 import {
   Select,
   SelectContent,
@@ -14,40 +17,75 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import SearchInput from '@/components/SearchInput';
-import { getCountries } from '@/actions/CountriesActions';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import { usePaginate } from '@/hooks/usePaginate';
 
 export default function Home() {
-  const { data, isLoading, isError } = useQuery({
+  const { paginatedData, paginate, currentPage, setCurrentPage } = usePaginate();
+
+  const { data, isLoading } = useQuery({
     queryKey: ['countries'],
     queryFn: () => getCountries(),
   });
 
+  useEffect(() => {
+    if (data?.length) {
+      paginate(data, 5);
+    }
+  }, [data, paginate]);
+
+
   return (
-    <main className="top-[200px] px-5 pb-10 absolute w-full flex justify-center">
+    <main className="top-[200px] px-5 pb-10 absolute w-full flex items-center flex-col">
       <Card className="w-full xl:w-3/4 rounded-2xl border-[0.5px] border-neutral-700 px-6 py-5 overflow-auto max-h-[70vh] relative">
         <div className="flex justify-between items-center">
           <div className=" text-neutral-500 font-semibold">
-            Found {data?.length || 0 } countries
+            Found {data?.length || 0} countries
           </div>
-            <SearchInput />
+          <SearchInput />
         </div>
         <div className="flex justify-between mt-5">
           <div className="flex-1 pr-7 min-w-[250px]">
             <SideFilters />
           </div>
           <div className="flex-auto">
-            <TableCountries data={data} isLoading={isLoading} />
+            <TableCountries data={paginatedData} isLoading={isLoading} />
           </div>
         </div>
       </Card>
+      <div className='mt-3'>
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#" onClick={() => setCurrentPage(currentPage === 1 ? 1 : currentPage-1)}/>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">{currentPage}</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext href="#" onClick={() => setCurrentPage(currentPage+1)} />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
     </main>
   );
 }
 
 const SideFilters = () => {
   return (
-    <div className='sticky top-0'>
+    <div className="sticky top-0">
       <div className="mb-5">
         <h2 className="text-neutral-500 font-semibold text-xs mb-2 mt-3">
           Sort by

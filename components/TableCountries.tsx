@@ -32,7 +32,7 @@ const TableCountries = ({ data = [], isLoading = false }: Props) => {
             ))}
           </TableRow>
         </TableHeader>
-        <TableBody className="text-neutral-300">
+        <TableBody>
           {isLoading ? (
             <Loading />
           ) : (
@@ -63,10 +63,10 @@ const TableCountries = ({ data = [], isLoading = false }: Props) => {
 
 const Loading = () => (
   <>
-    {Array.from({ length: 3 }, (_, item) => (
+    {Array.from({ length: 5 }, (_, item) => (
       <TableRow key={item}>
         <TableCell>
-          <Skeleton className="h-12 w-12 rounded-full" />
+          <Skeleton className="h-10 w-14 rounded-lg" />
         </TableCell>
         <TableCell>
           <Skeleton className="h-4 w-full" />

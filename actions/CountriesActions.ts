@@ -1,6 +1,5 @@
-"use server"
-
-const API_URL = 'https://restcountries.com/v3.1/all'
+const API_URL = '/api/countries';
 
 //get all countries
-export const getCountries = async () => await fetch(API_URL).then((res) => res.json())
+export const getCountries = async () =>
+  await fetch(API_URL, { method: 'GET' }).then((res) => res.json());
